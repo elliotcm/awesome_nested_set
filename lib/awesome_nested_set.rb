@@ -498,9 +498,12 @@ module CollectiveIdea #:nodoc:
         end
         
         # reload left, right, and parent
+        # without clearing associations
         def reload_nested_set
-          reload(:select => "#{quoted_left_column_name}, " +
-            "#{quoted_right_column_name}, #{quoted_parent_column_name}")
+          @attributes.update(self.class.find(self.id, :select => "#{quoted_left_column_name}, " +
+            "#{quoted_right_column_name}, #{quoted_parent_column_name}").instance_variable_get('@attributes'))
+          @attributes_cache = {}
+          self
         end
         
         def move_to(target, position)
